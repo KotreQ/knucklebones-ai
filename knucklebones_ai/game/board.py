@@ -2,10 +2,11 @@ import numpy as np
 
 
 class Board:
-    def __init__(self, data: np.ndarray | None):
+    def __init__(self, data: np.ndarray | None = None):
         # self._data[col, val] = counts of value val in column col (0 is empty)
         if data is None:
             self._data = np.zeros((3, 7), np.uint8)
+            self._data[:, 0] = 3
         else:
             assert data.shape == (3, 7)
             assert data.dtype == np.uint8
