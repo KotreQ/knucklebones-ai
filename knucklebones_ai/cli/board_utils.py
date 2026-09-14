@@ -21,3 +21,16 @@ def display_board(board: Board, *, reversed: bool = False):
         row_dice = (str(val) if val > 0 else " " for val in board_tiles[:, row])
         print("| " + " | ".join(row_dice) + " |")
     print(separator)
+
+
+def display_state(state: State):
+    print(f"Current player: {state.player.name}")
+    if state.roll != 0:
+        print(f"Dice value: {state.roll}")
+    print("")
+    print("Board:")
+    display_board(state.opponent_board, reversed=True)
+    print("")
+    display_board(state.player_board)
+    print("")
+    print(f"Available actions: {[a.value for a in state.get_actions()]}")
