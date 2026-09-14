@@ -1,5 +1,6 @@
 import os
 import subprocess as sp
+from knucklebones_ai.game.state import State
 
 
 def clear_console():
@@ -23,7 +24,8 @@ def run_cli():
                 print("Exiting...")
                 finished = True
 
-            # case "new":
+            case "new":
+                game = State()
 
             case "debug":
                 print("Press ENTER to continue")
