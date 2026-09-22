@@ -1,0 +1,9 @@
+[project]
+name = "knucklebones-ai"
+version = "0.1.0"
+description = "An AI inspired by AlphaZero for the knucklebones game from Cult of The Lamb"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "numpy>=2.4.6",
+]
