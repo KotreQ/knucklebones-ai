@@ -1,5 +1,7 @@
 import os
 import subprocess as sp
+import shlex
+import time
 
 from knucklebones_ai.game.board import Board
 from knucklebones_ai.game.state import Player, State
@@ -28,16 +30,23 @@ def run_cli():
         print("")
 
         try:
-            command = input("Enter command: ").strip()
+            cmd = input("Enter command: ").strip()
         except EOFError:
-            command = "exit"
+            cmd = "exit"
 
-        match command:
-            case "exit":
+        try:
+            cmd = shlex.split(cmd)
+        except ValueError as e:
+            print(f"Invalid command syntax: {e}")
+            wait_for_key()
+            continue
+
+        match cmd:
+            case ("exit",):
                 print("\nExiting...")
                 finished = True
 
-            case "new":
+            case ("new",):
                 match input("Who is the starting player? player or opponent (p/o): ").strip().lower():
                     case "p":
                         player = Player.PLAYER_ROLL
@@ -50,8 +59,35 @@ def run_cli():
 
                 game = State(player, 0, Board(), Board())
 
-            case "debug":
+            case ("clear",):
+                game = None
+
+            case ("debug",):
                 wait_for_key()
+
+            case ("do", _):
+                if game is None:
+                    print("No game started")
+                    wait_for_key()
+                    continue
+
+                try:
+                    choice = int(cmd[1])
+                except ValueError:
+                    print(f"Invalid argument: {cmd[1]}")
+                    wait_for_key()
+                    continue
+
+                actions = {action.value: action for action in game.get_actions()}
+                try:
+                    action = actions[choice]
+                except KeyError:
+                    print(f"No action with value: {choice}")
+                    wait_for_key()
+                    continue
+
+                game = game.transition(action)
             
             case _:
                 print("Unknown command")
+                time.sleep(1)
