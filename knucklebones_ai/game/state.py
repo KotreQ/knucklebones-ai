@@ -28,6 +28,8 @@ class State:
         self.opponent_board = opponent_board
 
     def get_actions(self) -> list[Action]:
+        if self.is_finished():
+            return []
         if self.player in (Player.PLAYER_ROLL, Player.OPPONENT_ROLL):
             return [Action(ActionType.ROLL, val) for val in range(1, 7)]
         else:
@@ -38,9 +40,9 @@ class State:
         if action.action_type == ActionType.ROLL:
             assert self.player in (Player.PLAYER_ROLL, Player.OPPONENT_ROLL)
         else:
-            assert self.player is (Player.PLAYER, Player.OPPONENT)
+            assert self.player in (Player.PLAYER, Player.OPPONENT)
 
-        new_player = Player(self.player.value + 1 % len(Player))
+        new_player = Player((self.player.value + 1) % len(Player))
 
         if action.action_type == ActionType.ROLL:
             new_roll = action.value
