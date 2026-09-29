@@ -28,7 +28,7 @@ class MctsNode:
         
         match self.state.player:
             case Player.PLAYER_ROLL | Player.OPPONENT_ROLL:
-                return random.choice(self.children.values())
+                return random.choice(list(self.children.values()))
 
             case Player.PLAYER:
                 node_eval = lambda node: calculate_ucb(node.score, node.n, self.n)
@@ -65,6 +65,8 @@ class MctsNode:
         value = child.do_rollout()
         self.score += value
         self.n += 1
+
+        return value
 
     def do_random_rollout(self) -> float:
         value = do_random_rollout(self.state)

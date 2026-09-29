@@ -22,7 +22,7 @@ class Board:
         return self._data[col, 0] > 0
 
     def get_points(self) -> int:
-        return sum(val * count ** 2 for col in self._data for val, count in enumerate(col))
+        return sum(val * int(count) ** 2 for col in self._data for val, count in enumerate(col))
 
     def place_die(self, col: int, val: int) -> Board:
         assert self.is_col_available(col)
