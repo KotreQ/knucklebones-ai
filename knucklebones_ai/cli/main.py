@@ -3,6 +3,7 @@ import subprocess as sp
 import shlex
 import time
 
+from knucklebones_ai.ai.mcts import MctsNode
 from knucklebones_ai.game.board import Board
 from knucklebones_ai.game.state import Player, State
 from .board_utils import display_state
@@ -87,6 +88,33 @@ def run_cli():
                     continue
 
                 game = game.transition(action)
+
+            case ("mcts", _):
+                if game is None:
+                    print("No game started")
+                    wait_for_key()
+                    continue
+
+                try:
+                    iteration_count = int(cmd[1])
+                    if iteration_count < 0:
+                        raise ValueError(f"Invalid iteration count: {iteration_count}")
+                except ValueError:
+                    print(f"Invalid argument: {cmd[1]}")
+                    wait_for_key()
+                    continue
+
+                root = MctsNode(game)
+
+                for _ in range(iteration_count):
+                    root.do_rollout()
+
+                action_evals = root.get_action_evals()
+                for action in sorted(action_evals, key=lambda action: action_evals[action], reverse=True):
+                    print(f"Action {action}: {action_evals[action]:.2f}")
+
+                wait_for_key()
+                
             
             case _:
                 print("Unknown command")
