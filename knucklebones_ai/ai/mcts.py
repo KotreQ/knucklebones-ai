@@ -1,5 +1,8 @@
-from knucklebones_ai.game.state import State
+import random
+
+from knucklebones_ai.game.state import Player, State
 from .rollout import do_random_rollout
+from .ucb import calculate_ucb
 
 
 class MctsNode:
@@ -21,7 +24,19 @@ class MctsNode:
             self.children.append(node)
 
     def select_best_child(self) -> MctsNode:
-        raise NotImplementedError
+        assert self.is_expanded()
+        
+        match self.state.player:
+            case Player.PLAYER_ROLL | Player.OPPONENT_ROLL:
+                return random.choice(self.children)
+
+            case Player.PLAYER:
+                node_eval = lambda node: calculate_ucb(node.score, node.n, self.n)
+
+            case Player.OPPONENT:
+                node_eval = lambda node: calculate_ucb(-node.score, node.n, self.n)
+
+        return max(self.children, key=node_eval)
 
     def do_rollout(self) -> float:
         if self.n == 0:
