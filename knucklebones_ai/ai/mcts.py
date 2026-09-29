@@ -5,7 +5,7 @@ from .rollout import do_random_rollout
 class MctsNode:
     def __init__(self, state: State):
         self.state = state
-        self.score = 0  # avg = score / n
+        self.score = 0
         self.n = 0
         self.children: list[MctsNode] = []
     
