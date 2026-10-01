@@ -4,6 +4,7 @@ import shlex
 import time
 
 from knucklebones_ai.ai.mcts import MctsNode
+from knucklebones_ai.ai.neural import KnucklebonesNet, tensorify_state
 from knucklebones_ai.game.board import Board
 from knucklebones_ai.game.state import Player, State
 from .board_utils import display_state
@@ -64,6 +65,14 @@ def run_cli():
                 game = None
 
             case ("debug",):
+                model = KnucklebonesNet()
+                in_data = tensorify_state(game)
+
+                features = model(in_data)
+
+                print(features)
+                print(features.shape)
+
                 wait_for_key()
 
             case ("do", _):
