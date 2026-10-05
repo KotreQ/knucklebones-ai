@@ -36,5 +36,26 @@ class KnucklebonesNet(nn.Module):
             nn.ReLU(),
         )
 
+        self.policy_head = nn.Linear(64, 3)
+        self.value_head = nn.Linear(64, 1)
+
     def forward(self, x):
-        return self.features(x)
+        features = self.features(x)
+
+        logits = self.policy_head(features)
+
+        value = self.value_head(features)
+        value = torch.tanh(value).squeeze(-1)
+
+        return logits, value
+
+
+def logits_to_probabilities(logits: torch.Tensor, legal_logits):
+    legal = torch.zeros_like(logits, dtype=torch.bool)
+    for index in legal_logits:
+        legal[index] = True
+
+    logits = logits.masked_fill(~legal, float("-inf"))
+    probabilities = torch.softmax(logits, dim=-1)
+
+    return probabilities
