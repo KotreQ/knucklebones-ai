@@ -120,7 +120,7 @@ def run_cli():
 
                 action_evals = root.get_action_evals()
                 for action in sorted(action_evals, key=lambda action: action_evals[action], reverse=True):
-                    print(f"Action {action}: {action_evals[action]:.2f}")
+                    print(f"Action {action.value}: {action_evals[action]:.2f}")
 
                 wait_for_key()
                 

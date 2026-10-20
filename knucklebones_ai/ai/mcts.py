@@ -51,6 +51,14 @@ class MctsNode:
 
         return evals
 
+    def get_visit_counts(self) -> dict[Action, int]:
+        counts = {}
+
+        for action, child in self.children.items():
+            counts[action] = child.n
+
+        return counts
+
     def do_rollout(self) -> float:
         if self.n == 0:
             return self.do_random_rollout()
